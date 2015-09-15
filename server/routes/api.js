@@ -43,17 +43,26 @@ router.post('/exercises', function(req, res, next){
 
 //put single exercise
 router.put('/exercise/:id', function(req, res, next){
-  Exercise.findById(req.params.id, function(err, data){
-    data.name = req.body.name;
-    data.description = req.body.description;
-    data.tags = req.body.tags;
-    data.save(function(err){
-      if(err){
-        res.json({'ERROR': err});
-      } else {
-        res.json({'UPDATED': data});
-      }
-    });
+  var update = req.body;
+  options = {new: true};
+
+  Exercise.findOneAndUpdate(req.params.id, update, options, function(err, data){
+    if(err){
+      res.json({'ERROR': err});
+    } else {
+      res.json({'UPDATED': data});
+    }
+  });
+});
+
+router.delete('/exercise/:id', function(req, res, next){
+  var query = {'_id' : req.params.id};
+  Exercise.findOneAndRemove(query, function(err, data){
+    if(err){
+      res.json({'ERROR': err});
+    } else {
+      res.json({'DELETED': data});
+    }
   });
 });
 

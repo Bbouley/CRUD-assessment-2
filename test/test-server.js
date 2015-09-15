@@ -99,17 +99,42 @@ describe('Exercises', function(){
 
   it ('should update a SINGLE exercise on /exercise/<id>', function(done){
     chai.request(server)
-    .get('./exercises')
+    .get('/api/v1/exercises')
     .end(function(err, res){
       chai.request(server)
-      .put('/exercise/'+res.body[0]._id)
-      .send({'name ': 'change the name'})
+      .put('/api/v1/exercise/'+ res.body[0]._id)
+      .send({'description': 'New Description testStuff'})
       .end(function(error, response){
         response.should.have.status(200);
         response.body.should.be.a('object');
-        response.body.should.have.property('')
+        response.body.should.have.property('UPDATED');
+        response.body.UPDATED.should.be.a('object');
+        response.body.UPDATED.should.have.property('name');
+        response.body.UPDATED.tags.should.be.a('array');
+        response.body.UPDATED.description.should.equal('New Description testStuff');
+        done();
       });
     });
   });
-  it('should delete a SINGLE exercise on /exercise/<id> DELETE');
+
+  it('should delete a SINGLE exercise on /exercise/<id> DELETE', function(done){
+    chai.request(server)
+    .get('/api/v1/exercises')
+    .end(function(error, response){
+      chai.request(server)
+      .delete('/api/v1/exercise/'+response.body[0]._id)
+      .end(function(err, res){
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.should.be.json;
+        res.body.should.have.property('DELETED');
+        res.body.DELETED.should.be.a('object');
+        res.body.DELETED.should.have.property('name');
+        res.body.DELETED.should.have.property('description');
+        res.body.DELETED.should.have.property('tags');
+        res.body.DELETED.tags.should.be.a('array');
+        done();
+      });
+    });
+  });
 });
