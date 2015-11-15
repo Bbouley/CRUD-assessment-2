@@ -86,6 +86,7 @@ describe('Exercises', function(){
       res.should.have.status(200);
       res.should.be.json;
       res.body.should.be.a('object');
+      console.log(res.body);
       res.body.should.have.property('SUCCESS');
       res.body.SUCCESS.should.have.property('name');
       res.body.SUCCESS.should.have.property('description');
